@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpendWise</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1><span class="money">💰</span> SpendWise</h1>
+    <div class="input-box">
+        <input id="title" placeholder="Expense Title">
+        <input id="amount" type="number" placeholder="Amount">
+        <br>
+        <button onclick="addExpense()">Add</button>
+        <button onclick="showTotal()">Show Total</button>
+    </div>
+
+    <div class="list-box">
+        <h2>Expenses</h2>
+        <ul id="expenseList"></ul>
+
+        <div>
+            <h3 id="totalDisplay"></h3>
+            <button id="removeBtn" onclick="clearTotal()" style="display:none;">
+                Remove
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h3>Edit Expense</h3>
+        <input id="editTitle">
+        <input id="editAmount" type="number">
+        <button onclick="updateExpense()">Save</button>
+        <button onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- DELETE MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <h3>⚠️ Confirm Delete</h3>
+        <p>Delete this expense?</p>
+        <button onclick="confirmDelete()">Yes</button>
+        <button onclick="closeDeleteModal()">Cancel</button>
+    </div>
+</div>
+
+<!-- ADD POPUP -->
+<div id="addModal" class="modal">
+    <div class="modal-content">
+        <h3>✅ Added Successfully</h3>
+    </div>
+</div>
+
+<audio id="coinSound" src="coin.mp3"></audio>
+<script src="script.js"></script>
+</body>
+</html>
