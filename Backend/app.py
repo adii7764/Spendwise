@@ -5,8 +5,13 @@ import sqlite3
 app = Flask(__name__)
 CORS(app)
 
+import os
+
 def get_db_connection():
-    conn = sqlite3.connect('database.db')
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    db_path = os.path.join(BASE_DIR, "database.db")
+
+    conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
     return conn
 
@@ -45,4 +50,5 @@ def update_expense(id):
     conn.close()
     return jsonify({"message": "updated"})
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)
