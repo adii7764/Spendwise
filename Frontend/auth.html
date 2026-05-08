@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SpendWise — Login</title>
+    <link rel="stylesheet" href="auth.css">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="auth-wrapper">
+    <div class="auth-left">
+        <div class="brand">
+            <span class="coin-icon">💰</span>
+            <span class="brand-name">SpendWise</span>
+        </div>
+        <h1 class="tagline">Track every<br><span>rupee.</span></h1>
+        <p class="sub">Your personal finance companion. Know where your money goes.</p>
+        <div class="features">
+            <div class="feat">📊 Category-wise charts</div>
+            <div class="feat">📅 Month-wise filtering</div>
+            <div class="feat">🔒 Secure & private</div>
+            <div class="feat">💸 Real-time totals</div>
+        </div>
+    </div>
+
+    <div class="auth-right">
+        <div class="auth-card">
+
+            <!-- TABS -->
+            <div class="tabs">
+                <button class="tab active" id="loginTab" onclick="switchTab('login')">Login</button>
+                <button class="tab" id="signupTab" onclick="switchTab('signup')">Sign Up</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="you@example.com" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="password-wrap">
+                        <input type="password" id="loginPassword" placeholder="••••••••" />
+                        <span class="eye" onclick="togglePass('loginPassword', this)">👁️</span>
+                    </div>
+                </div>
+                <div class="error-msg" id="loginError"></div>
+                <button class="btn-primary" onclick="login()">
+                    <span id="loginBtnText">Login →</span>
+                    <span id="loginLoader" class="loader" style="display:none"></span>
+                </button>
+                <p class="switch-text">Don't have an account? <a onclick="switchTab('signup')">Sign up</a></p>
+            </div>
+
+            <!-- SIGNUP FORM -->
+            <div id="signupForm" style="display:none">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="Aditya Pandey" />
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="you@example.com" />
+                </div>
+                <div class="form-group">
+                    <label>Password <span class="hint">(min 6 characters)</span></label>
+                    <div class="password-wrap">
+                        <input type="password" id="signupPassword" placeholder="••••••••" />
+                        <span class="eye" onclick="togglePass('signupPassword', this)">👁️</span>
+                    </div>
+                </div>
+                <div class="error-msg" id="signupError"></div>
+                <button class="btn-primary" onclick="register()">
+                    <span id="signupBtnText">Create Account →</span>
+                    <span id="signupLoader" class="loader" style="display:none"></span>
+                </button>
+                <p class="switch-text">Already have an account? <a onclick="switchTab('login')">Login</a></p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="auth.js"></script>
+</body>
+</html>
