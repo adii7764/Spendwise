@@ -1,4 +1,4 @@
-const API_URL = "https://spendwise-backend-mtvk.onrender.com";
+const API_URL = "http://127.0.0.1:5000";
 
 // ── AUTH GUARD ────────────────────────────────────
 const token = localStorage.getItem("token");
@@ -295,3 +295,117 @@ async function confirmDelete() {
 // ── CLOSE MODALS ON OVERLAY CLICK ─────────────────
 document.getElementById("editModal").addEventListener("click",   e => { if(e.target===e.currentTarget) closeEdit(); });
 document.getElementById("deleteModal").addEventListener("click", e => { if(e.target===e.currentTarget) closeDelete(); });
+
+// ── EXPORT CSV ────────────────────────────────────
+async function exportCSV() {
+    const month = getMonth();
+    const url   = month ? `${API_URL}/expenses?month=${month}` : `${API_URL}/expenses`;
+    const res   = await fetch(url, { headers: authHeaders() });
+    const data  = await res.json();
+
+    if (!data.length) return showToast("No expenses to export", true);
+
+    const rows = [["Title", "Amount (₹)", "Category", "Date"]];
+    data.forEach(e => rows.push([e.title, e.amount, e.category, e.date]));
+
+    const csv     = rows.map(r => r.map(v => `"${v}"`).join(",")).join("\n");
+    const blob    = new Blob([csv], { type: "text/csv" });
+    const link    = document.createElement("a");
+    link.href     = URL.createObjectURL(blob);
+    link.download = `SpendWise_${month || "all"}.csv`;
+    link.click();
+    showToast("CSV downloaded!");
+}
+
+// ── EXPORT PDF ────────────────────────────────────
+async function exportPDF() {
+    const month = getMonth();
+    const url   = month ? `${API_URL}/expenses?month=${month}` : `${API_URL}/expenses`;
+    const res   = await fetch(url, { headers: authHeaders() });
+    const data  = await res.json();
+
+    if (!data.length) return showToast("No expenses to export", true);
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const userName = localStorage.getItem("userName") || "User";
+    const total    = data.reduce((sum, e) => sum + Number(e.amount), 0);
+    const label    = month ? `Month: ${month}` : "All Time";
+
+    // Header
+    doc.setFillColor(20, 22, 35);
+    doc.rect(0, 0, 210, 40, "F");
+    doc.setTextColor(124, 106, 247);
+    doc.setFontSize(22);
+    doc.setFont("helvetica", "bold");
+    doc.text("SpendWise", 14, 20);
+    doc.setFontSize(10);
+    doc.setTextColor(107, 117, 148);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Expense Report — ${label}`, 14, 30);
+    doc.text(`Generated for: ${userName}`, 14, 37);
+
+    // Total box
+    doc.setFillColor(30, 35, 48);
+    doc.roundedRect(14, 48, 80, 20, 3, 3, "F");
+    doc.setTextColor(107, 117, 148);
+    doc.setFontSize(9);
+    doc.text("TOTAL SPENT", 18, 56);
+    doc.setTextColor(124, 106, 247);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(`Rs. ${total.toLocaleString("en-IN")}`, 18, 64);
+
+    // Transactions box
+    doc.setFillColor(30, 35, 48);
+    doc.roundedRect(100, 48, 80, 20, 3, 3, "F");
+    doc.setTextColor(107, 117, 148);
+    doc.setFontSize(9);
+    doc.setFont("helvetica", "normal");
+    doc.text("TRANSACTIONS", 104, 56);
+    doc.setTextColor(74, 222, 128);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text(`${data.length}`, 104, 64);
+
+    // Table
+    doc.autoTable({
+        startY: 76,
+        head: [["#", "Title", "Category", "Date", "Amount (Rs.)"]],
+        body: data.map((e, i) => [
+            i + 1,
+            e.title,
+            e.category.replace(/[\u{1F000}-\u{FFFF}]/gu, "").trim(),
+            e.date,
+            `Rs. ${Number(e.amount).toLocaleString("en-IN")}`
+        ]),
+        headStyles: {
+            fillColor: [124, 106, 247],
+            textColor: 255,
+            fontStyle: "bold",
+            fontSize: 10
+        },
+        bodyStyles: {
+            fillColor: [22, 26, 35],
+            textColor: [232, 236, 244],
+            fontSize: 9
+        },
+        alternateRowStyles: { fillColor: [30, 35, 48] },
+        columnStyles: { 4: { halign: "right" } },
+        margin: { left: 14, right: 14 }
+    });
+
+    // Footer
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.setTextColor(107, 117, 148);
+        doc.text(`SpendWise — Page ${i} of ${pageCount}`, 14, doc.internal.pageSize.height - 8);
+        doc.text(`github.com/adii7764/Spendwise`, 140, doc.internal.pageSize.height - 8);
+    }
+
+    doc.save(`SpendWise_${month || "all"}.pdf`);
+    showToast("PDF downloaded!");
+}

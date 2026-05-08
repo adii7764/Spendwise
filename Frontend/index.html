@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 </head>
 <body>
 
@@ -112,7 +114,11 @@
     <div class="right-panel">
         <div class="section-header">
             <div class="section-title">Your Expenses</div>
-            <span class="expense-count" id="expenseCount">0 items</span>
+            <div class="header-actions">
+                <span class="expense-count" id="expenseCount">0 items</span>
+                <button class="btn-export" onclick="exportCSV()" title="Export as CSV">📄 CSV</button>
+                <button class="btn-export btn-export-pdf" onclick="exportPDF()" title="Export as PDF">📑 PDF</button>
+            </div>
         </div>
         <div class="expense-list" id="expenseList"></div>
     </div>
