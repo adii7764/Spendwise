@@ -376,7 +376,7 @@ async function exportPDF() {
         body: data.map((e, i) => [
             i + 1,
             e.title,
-            e.category.replace(/[\u{1F000}-\u{FFFF}]/gu, "").trim(),
+            e.category.replace(/[^\x00-\x7F]/g, "").trim(),
             e.date,
             `Rs. ${Number(e.amount).toLocaleString("en-IN")}`
         ]),
