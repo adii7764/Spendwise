@@ -409,3 +409,10 @@ async function exportPDF() {
     doc.save(`SpendWise_${month || "all"}.pdf`);
     showToast("PDF downloaded!");
 }
+
+// ── KEEP BACKEND ALIVE ────────────────────────────
+setInterval(() => {
+    fetch("https://spendwise-backend-mtvk.onrender.com/expenses", {
+        headers: authHeaders()
+    }).catch(() => {});
+}, 4 * 60 * 1000); // ping every 4 minutes
